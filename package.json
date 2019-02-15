@@ -1,0 +1,40 @@
+{
+  "name": "md2html",
+  "version": "0.0.1",
+  "description": "Zero dependency markdown to html converter",
+  "module": "index.js",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha -b & eslint . --cache",
+    "dist": "babel index.js -d dist",
+    "prepare": "npm run dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BonnierNews/md2html"
+  },
+  "bugs": {
+    "url": "https://github.com/BonnierNews/md2html/issues"
+  },
+  "files": [
+    "dist/index.js",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "markdown",
+    "md",
+    "html",
+    "converter"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "chai": "^4.2.0",
+    "eslint": "^5.13.0",
+    "esm": "^3.2.4",
+    "mocha": "^5.2.0"
+  }
+}

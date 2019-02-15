@@ -1,0 +1,9 @@
+{
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "indent": 0,
+    "eol-last": 0
+  }
+}
