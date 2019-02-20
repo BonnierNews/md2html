@@ -109,7 +109,7 @@ describe("markdown to html", () => {
   });
 
   describe("multiline", () => {
-    it("happytrail", () => {
+    it("happytrail #1", () => {
       const markdown = `
 # Headline
 With _paragraph 1_.
@@ -140,6 +140,19 @@ With paragraph 6.
 <h6>Subheadline <i>6</i></h6>
 <p>With paragraph 6.</p>
 <ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
+
+      expect(render(markdown)).to.equal(markup);
+    });
+
+    it("happytrail #2", () => {
+      const markdown = `
+- Item 1
+new paragraph
+- Item 1
+- Item 2`;
+
+      const markup = `<ul><li>Item 1</li></ul><p>new paragraph</p>
+<ul><li>Item 1</li><li>Item 2</li></ul>`;
 
       expect(render(markdown)).to.equal(markup);
     });

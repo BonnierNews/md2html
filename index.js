@@ -31,6 +31,14 @@ export function render(markdown) {
         indentation = 0;
       }
 
+      if (nstate === LIST && lookahead !== 45) {
+        while (state.length) {
+          markup += "</" + state.pop() + ">";
+        }
+        nstate = undefined;
+        continue;
+      }
+
       if (!nstate || (nstate & FLOWCONTENT) === FLOWCONTENT) continue;
 
       markup += "</" + state.pop() + ">" + String.fromCharCode(charcode);
@@ -140,6 +148,7 @@ export function render(markdown) {
       markup += "<" + element + ">";
       state.push(element);
     } else {
+
       if (!nstate) {
         nstate = PHRASINGCONTENT;
         markup += "<p>";
