@@ -16,12 +16,12 @@ export function render(markdown) {
       previousIndentation = indentation;
       let lookahead = markdown.charCodeAt(idx + 1);
       if (lookahead === 32) {
-        indentation++;
+        ++indentation;
         let offset;
         for (offset = idx + 2; offset < len; ++offset) {
           lookahead = markdown.charCodeAt(offset);
           if (lookahead === 32) {
-            indentation++;
+            ++indentation;
             continue;
           }
           break;
@@ -63,7 +63,7 @@ export function render(markdown) {
           valid = true;
           continue;
         } else if (lookahead === charcode) {
-          size++;
+          ++size;
           if (size > 6) break;
           continue;
         }
@@ -97,7 +97,7 @@ export function render(markdown) {
         continue;
       }
 
-      idx++;
+      ++idx;
 
       const upState = state[state.length - 1];
 
