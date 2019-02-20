@@ -1,4 +1,4 @@
 --timeout 1000
 --reporter spec
+--require @babel/register
 --recursive
---require esm

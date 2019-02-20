@@ -1,4 +1,11 @@
-export function render(markdown) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.render = render;
+
+function render(markdown) {
   const FLOWCONTENT = 1;
   const PHRASINGCONTENT = 2;
   const LIST = 3;
