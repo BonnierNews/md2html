@@ -8,7 +8,7 @@ Markdown to HTML converter.
 Supports:
 - `#`
 - `-`
-  - '-'
+  - `-`
 - `*`
 - `_`
 - `[_Bait_](https://www.example.com)`: links
