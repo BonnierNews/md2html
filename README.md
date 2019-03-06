@@ -8,8 +8,10 @@ Markdown to HTML converter.
 Supports:
 - `#`
 - `-`
+  - '-'
 - `*`
 - `_`
+- `[_Bait_](https://www.example.com)`: links
 
 ```js
 import {render} from 'md2html';
