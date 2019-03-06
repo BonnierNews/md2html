@@ -98,6 +98,26 @@ describe("markdown to html", () => {
     });
   });
 
+  describe("links", () => {
+    it("[Text](anchor) renders a tag with text and href", () => {
+      expect(render("[Text](anchor)")).to.equal("<a href=\"anchor\">Text</a>");
+    });
+
+    it("emphasis text is accepted in anchor text", () => {
+      expect(render("[__Text__](anchor)")).to.equal("<a href=\"anchor\"><strong>Text</strong></a>");
+      expect(render("[**Text**](anchor)")).to.equal("<a href=\"anchor\"><strong>Text</strong></a>");
+      expect(render("[_Text_](anchor)")).to.equal("<a href=\"anchor\"><i>Text</i></a>");
+    });
+
+    it("use this [link](anchor) wraps link in paragraph", () => {
+      expect(render("use this [link](anchor)")).to.equal("<p>use this <a href=\"anchor\">link</a></p>");
+    });
+
+    it("## use this [link](anchor) wraps link in header", () => {
+      expect(render("## use this [link](anchor)")).to.equal("<h2>use this <a href=\"anchor\">link</a></h2>");
+    });
+  });
+
   describe("combinations", () => {
     it("text with hyphen renders hyphen", () => {
       expect(render("This is -ignored")).to.equal("<p>This is -ignored</p>");
@@ -144,7 +164,7 @@ With paragraph 6.
       expect(render(markdown)).to.equal(markup);
     });
 
-    it("happytrail #2", () => {
+    it("list breaks when paragraph occur", () => {
       const markdown = `
 - Item 1
 new paragraph
@@ -154,7 +174,36 @@ new paragraph
       const markup = `<ul><li>Item 1</li></ul><p>new paragraph</p>
 <ul><li>Item 1</li><li>Item 2</li></ul>`;
 
-      expect(render(markdown)).to.equal(markup);
+      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+    });
+
+    it("links happy trail", () => {
+      const markdown = `
+- Item with [link0](anchor0)
+new paragraph with [link1](anchor1)
+- Item 1
+  - Sub item with [link2](anchor2)
+
+## Headline with [link3](anchor3)
+[link4](anchor4)
+`;
+
+      const markup = `
+<ul>
+<li>Item with <a href="anchor0">link0</a></li>
+</ul>
+<p>new paragraph with <a href="anchor1">link1</a></p>
+<ul>
+<li>Item 1
+<ul>
+<li>Sub item with <a href="anchor2">link2</a></li>
+</ul>
+</li>
+</ul>
+<h2>Headline with <a href="anchor3">link3</a></h2>
+<a href="anchor4">link4</a>`;
+
+      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
     });
   });
 });

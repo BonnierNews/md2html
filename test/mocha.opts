@@ -2,4 +2,3 @@
 --reporter spec
 --require @babel/register
 --recursive
---exit
