@@ -27,7 +27,6 @@ export function render(markdown) {
 
   for (let idx = 0; idx <= len; ++idx) {
     charcode = markdown.charCodeAt(idx);
-    // console.log({charcode, nstate}, String.fromCharCode(charcode))
 
     if (charcode >= CHARS.WHITE_SPACE_START && charcode <= CHARS.WHITE_SPACE_END) {
       previousIndentation = indentation;

@@ -1,6 +1,6 @@
 {
   "name": "@bonniernews/md2html",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Zero dependency markdown to html converter",
   "module": "index.js",
   "main": "dist/index.js",
@@ -32,12 +32,12 @@
   ],
   "devDependencies": {
     "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
     "benchmark": "^2.1.4",
     "chai": "^4.2.0",
-    "eslint": "^5.14.1",
-    "mocha": "^5.2.0"
+    "eslint": "^5.15.1",
+    "mocha": "^6.0.2"
   }
 }
