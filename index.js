@@ -6,8 +6,8 @@ export function render(markdown) {
   };
 
   const CHARS = {
-    WHITE_SPACE_START: 9,
-    WHITE_SPACE_END: 13,
+    NEW_LINE: 10,
+    CARRIAGE_RETURN: 13,
     SPACE: 32,
     HASH: 35,
     STARTPARENTHESES: 40,
@@ -28,10 +28,13 @@ export function render(markdown) {
   for (let idx = 0; idx <= len; ++idx) {
     charcode = markdown.charCodeAt(idx);
 
-    if (charcode >= CHARS.WHITE_SPACE_START && charcode <= CHARS.WHITE_SPACE_END) {
+    if (charcode == CHARS.NEW_LINE || charcode == CHARS.CARRIAGE_RETURN) {
+      let lookahead = markdown.charCodeAt(idx + 1);
+      if (lookahead == CHARS.NEW_LINE || lookahead == CHARS.CARRIAGE_RETURN) continue;
+
       previousIndentation = indentation;
       indentation = 0;
-      let lookahead = markdown.charCodeAt(idx + 1);
+
       if (lookahead == CHARS.SPACE) {
         ++indentation;
         let offset;

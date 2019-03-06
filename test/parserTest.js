@@ -179,6 +179,22 @@ describe("markdown to html", () => {
     });
   });
 
+  describe("new line chars", () => {
+    it("crlf is treated as one new line", () => {
+      const markdown = "- Item 1\r\n- Item 2";
+      const markup = "<ul><li>Item 1</li><li>Item 2</li></ul>";
+
+      expect(render(markdown)).to.equal(markup);
+    });
+
+    it("multiple new line chars are treated as one new line", () => {
+      const markdown = `- Item 1${[13, 10, 13, 10, 13].map((n) => String.fromCharCode(n)).join("")}- Item 2`;
+      const markup = "<ul><li>Item 1</li><li>Item 2</li></ul>";
+
+      expect(render(markdown)).to.equal(markup);
+    });
+  });
+
   describe("multiline", () => {
     it("happytrail #1", () => {
       const markdown = `
