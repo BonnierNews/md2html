@@ -30,6 +30,7 @@ export function render(markdown) {
 
     if (charcode >= CHARS.WHITE_SPACE_START && charcode <= CHARS.WHITE_SPACE_END) {
       previousIndentation = indentation;
+      indentation = 0;
       let lookahead = markdown.charCodeAt(idx + 1);
       if (lookahead == CHARS.SPACE) {
         ++indentation;
@@ -43,8 +44,6 @@ export function render(markdown) {
           break;
         }
         idx = offset - 1;
-      } else {
-        indentation = 0;
       }
 
       if ((nstate & NSTATE.LIST) == NSTATE.LIST && lookahead !== CHARS.DASH) {
@@ -103,7 +102,7 @@ export function render(markdown) {
       state.push("</" + element + ">");
       continue;
     } else if (charcode == CHARS.DASH) {
-      if (nstate && (nstate & NSTATE.FLOWCONTENT) == 0) {
+      if (nstate && !(nstate & NSTATE.FLOWCONTENT)) {
         markup += "-";
         continue;
       } else if (markdown.charCodeAt(idx + 1) !== CHARS.SPACE) {
@@ -116,18 +115,18 @@ export function render(markdown) {
 
       ++idx;
 
-      const upState = state[state.length - 1];
-
-      if (upState == "</li>" && indentation == previousIndentation) {
-        markup += state.pop();
-      } else if (upState == "</li>" && indentation > previousIndentation) { // start sublist
-        markup += "<ul>";
-        state.push("</ul>");
-      } else if (indentation < previousIndentation) { // close sublist
-        markup += state.pop(); // close last item
-        markup += state.pop(); // close sublist
-        markup += state.pop(); // close parent item
-      } else if (upState !== "</ul>") {
+      if ((nstate & NSTATE.LIST) == NSTATE.LIST) {
+        if (indentation == previousIndentation) {
+          markup += state.pop();
+        } else if (indentation > previousIndentation) { // start sublist
+          markup += "<ul>";
+          state.push("</ul>");
+        } else if (indentation < previousIndentation) { // close sublist
+          markup += state.pop(); // close last item
+          markup += state.pop(); // close sublist
+          markup += state.pop(); // close parent item
+        }
+      } else { // start new list
         markup += "<ul>";
         state.push("</ul>");
       }

@@ -96,6 +96,57 @@ describe("markdown to html", () => {
     it("continues list after sublist", () => {
       expect(render("- Item 1\n  - Sub item 1\n- Item 2")).to.equal("<ul><li>Item 1<ul><li>Sub item 1</li></ul></li><li>Item 2</li></ul>");
     });
+
+    it("list with sublist items", () => {
+      const markdown = `
+- Item 1
+  - Item 1.1
+  - Item 1.2
+`;
+
+      const markup = `
+<ul>
+<li>Item 1
+<ul>
+<li>Item 1.1</li>
+<li>Item 1.2</li>
+</ul>
+</li>
+</ul>
+`;
+
+      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+    });
+
+    it("list with sublist that contain sublist items", () => {
+      const markdown = `
+- Item 1
+  - Item 1.1
+    - Item 1.1.1
+    - Item 1.1.2
+  - Item 1.2
+  - Item 1.3
+`;
+
+      const markup = `
+<ul>
+<li>Item 1
+<ul>
+<li>Item 1.1
+<ul>
+<li>Item 1.1.1</li>
+<li>Item 1.1.2</li>
+</ul>
+</li>
+<li>Item 1.2</li>
+<li>Item 1.3</li>
+</ul>
+</li>
+</ul>
+`;
+
+      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+    });
   });
 
   describe("links", () => {
