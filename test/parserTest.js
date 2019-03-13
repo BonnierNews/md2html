@@ -169,6 +169,24 @@ describe("markdown to html", () => {
     });
   });
 
+  describe("images", () => {
+    it("![alt text](https://imgserver/icon48.png \"Title\") renders img tag with alt and title", () => {
+      expect(render("![alt text](https://imgserver/icon48.png \"Title\")")).to.equal("<img src=\"https://imgserver/icon48.png\" alt=\"alt text\" title=\"Title\">");
+    });
+
+    it("without title renders image", () => {
+      expect(render("![alt text](https://imgserver/icon48.png)")).to.equal("<img src=\"https://imgserver/icon48.png\" alt=\"alt text\">");
+    });
+
+    it("renders inline image", () => {
+      expect(render("This is an image ![alt text](https://imgserver/icon48.png) with title")).to.equal("<p>This is an image <img src=\"https://imgserver/icon48.png\" alt=\"alt text\"> with title</p>");
+    });
+
+    it("renders linked image", () => {
+      expect(render("This is a linked [image ![logo](https://cdn/logo.png)](anchor)")).to.equal("<p>This is a linked <a href=\"anchor\">image <img src=\"https://cdn/logo.png\" alt=\"logo\"></a></p>");
+    });
+  });
+
   describe("combinations", () => {
     it("text with hyphen renders hyphen", () => {
       expect(render("This is -ignored")).to.equal("<p>This is -ignored</p>");

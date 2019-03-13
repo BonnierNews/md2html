@@ -1,6 +1,6 @@
 {
   "name": "@bonniernews/md2html",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Zero dependency markdown to html converter",
   "module": "index.js",
   "main": "dist/index.js",
@@ -20,9 +20,7 @@
   },
   "files": [
     "dist/index.js",
-    "index.js",
-    "LICENSE",
-    "README.md"
+    "index.js"
   ],
   "keywords": [
     "markdown",

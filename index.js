@@ -3,12 +3,15 @@ export function render(markdown) {
     PHRASINGCONTENT: 1,
     FLOWCONTENT: 2,
     LIST: 3,
+    ATTRIBUTE: 4,
   };
 
   const CHARS = {
     NEW_LINE: 10,
     CARRIAGE_RETURN: 13,
     SPACE: 32,
+    EXCLAMATION_MARK: 33,
+    QUOTATION_MARK: 34,
     HASH: 35,
     STARTPARENTHESES: 40,
     ENDPARENTHESES: 41,
@@ -165,14 +168,65 @@ export function render(markdown) {
 
       markup += "<" + element + ">";
       state.push("</" + element + ">");
-    } else if (charcode == CHARS.STARTBRACKET) { // [
+    } else if (charcode == CHARS.EXCLAMATION_MARK) {
+      let lookahead = markdown.charCodeAt(idx + 1);
+      if (lookahead !== CHARS.STARTBRACKET) {
+        markup += String.fromCharCode(charcode);
+        continue;
+      }
+
+      const src = {value: "", charsOnly: true}, alt = {value: ""}, title = {value: ""};
+      let offset;
+      let attr = alt;
+      for (offset = idx + 2; offset < len; ++offset) {
+        lookahead = markdown.charCodeAt(offset);
+
+        if (lookahead == CHARS.ENDBRACKET) {
+          attr = undefined;
+          continue;
+        } else if (lookahead == CHARS.STARTPARENTHESES) {
+          attr = src;
+          continue;
+        } else if (lookahead == CHARS.ENDPARENTHESES) {
+          break;
+        } else if (lookahead === CHARS.SPACE && attr && attr.charsOnly) {
+          attr = title;
+          continue;
+        } else if (lookahead === CHARS.SPACE && attr && attr.charsOnly) {
+          continue;
+        } else if (lookahead === CHARS.QUOTATION_MARK) {
+          continue;
+        } else if (attr) {
+          attr.value += String.fromCharCode(lookahead);
+          continue;
+        }
+
+        break;
+      }
+
+      idx = offset;
+
+
+      markup += "<img src=\"" + src.value + "\"";
+      if (alt.value) {
+        markup += " alt=\"" + alt.value + "\"";
+      }
+      if (title.value) {
+        markup += " title=\"" + title.value + "\"";
+      }
+      markup += ">";
+
+      nstate = nstate | NSTATE.PHRASINGCONTENT;
+
+      continue;
+    } else if (charcode == CHARS.STARTBRACKET) {
       markup += "<a href=\"#link\">";
       state.push("</a>");
 
       nstate = nstate | NSTATE.PHRASINGCONTENT;
 
       continue;
-    } else if (charcode == CHARS.ENDBRACKET) { // [
+    } else if (charcode == CHARS.ENDBRACKET) {
       let link = "", valid;
       let offset;
       for (offset = idx + 1; offset < len; ++offset) {
