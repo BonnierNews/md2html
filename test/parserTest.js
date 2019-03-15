@@ -255,6 +255,10 @@ describe("markdown to html", () => {
     it("text with hash renders hash", () => {
       expect(render("This is #ignored")).to.equal("<p>This is #ignored</p>");
     });
+
+    it("'-d' should be a paragraph with '-b'", () => {
+      expect(render("-b")).to.equal("<p>-b</p>");
+    });
   });
 
   describe("new line chars", () => {

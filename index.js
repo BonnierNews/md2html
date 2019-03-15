@@ -80,8 +80,7 @@ export function render(markdown) {
       markup += " ";
       continue;
     } else if (charcode == CHARS.HASH) {
-      // #
-      if (nstate && (nstate & NSTATE.FLOWCONTENT) == 0) {
+      if (blockIndex != 0) {
         markup += "#";
         continue;
       }
@@ -118,17 +117,13 @@ export function render(markdown) {
       state.push("</" + element + ">");
       continue;
     } else if (charcode == CHARS.DASH) {
-      if (nstate && !(nstate & NSTATE.FLOWCONTENT)) {
+      if (blockIndex != 0) {
         markup += "-";
         continue;
-      } else if (blockIndex != 0) {
-        markup += "-";
-        continue;
-      } else if (markdown.charCodeAt(idx + 1) != CHARS.SPACE) {
+      } else if (blockIndex == 0 && markdown.charCodeAt(idx + 1) != CHARS.SPACE) {
         nstate = NSTATE.PHRASINGCONTENT;
-        markup += "<p>";
+        markup += "<p>-";
         state.push("</p>");
-        markup += "-";
         continue;
       }
 
