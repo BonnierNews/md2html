@@ -26,14 +26,21 @@ export function render(markdown) {
 
   const state = [];
   const len = markdown.length - 1;
-  let nstate, charcode, indentation = 0, previousIndentation = 0;
+  let nstate,
+    charcode,
+    indentation = 0,
+    previousIndentation = 0,
+    blockIndex = -1;
 
   for (let idx = 0; idx <= len; ++idx) {
+    ++blockIndex;
     charcode = markdown.charCodeAt(idx);
-
     if (charcode == CHARS.NEW_LINE || charcode == CHARS.CARRIAGE_RETURN) {
+      blockIndex = -1;
       let lookahead = markdown.charCodeAt(idx + 1);
-      if (lookahead == CHARS.NEW_LINE || lookahead == CHARS.CARRIAGE_RETURN) continue;
+      if (lookahead == CHARS.NEW_LINE || lookahead == CHARS.CARRIAGE_RETURN) {
+        continue;
+      }
 
       previousIndentation = indentation;
       indentation = 0;
@@ -60,7 +67,9 @@ export function render(markdown) {
         continue;
       }
 
-      if (!nstate || (nstate & NSTATE.FLOWCONTENT) == NSTATE.FLOWCONTENT) continue;
+      if (!nstate || (nstate & NSTATE.FLOWCONTENT) == NSTATE.FLOWCONTENT) {
+        continue;
+      }
 
       nstate = undefined;
       const lastState = state.pop();
@@ -70,14 +79,15 @@ export function render(markdown) {
     } else if (charcode == CHARS.SPACE) {
       markup += " ";
       continue;
-    } else if (charcode == CHARS.HASH) { // #
+    } else if (charcode == CHARS.HASH) {
+      // #
       if (nstate && (nstate & NSTATE.FLOWCONTENT) == 0) {
         markup += "#";
         continue;
       }
 
-      let size = 1, valid;
-      let offset;
+      let size = 1;
+      let offset, valid;
       for (offset = idx + 1; offset < len; ++offset) {
         const lookahead = markdown.charCodeAt(offset);
 
@@ -111,7 +121,10 @@ export function render(markdown) {
       if (nstate && !(nstate & NSTATE.FLOWCONTENT)) {
         markup += "-";
         continue;
-      } else if (markdown.charCodeAt(idx + 1) !== CHARS.SPACE) {
+      } else if (blockIndex != 0) {
+        markup += "-";
+        continue;
+      } else if (markdown.charCodeAt(idx + 1) != CHARS.SPACE) {
         nstate = NSTATE.PHRASINGCONTENT;
         markup += "<p>";
         state.push("</p>");
@@ -124,15 +137,18 @@ export function render(markdown) {
       if ((nstate & NSTATE.LIST) == NSTATE.LIST) {
         if (indentation == previousIndentation) {
           markup += state.pop();
-        } else if (indentation > previousIndentation) { // start sublist
+        } else if (indentation > previousIndentation) {
+          // start sublist
           markup += "<ul>";
           state.push("</ul>");
-        } else if (indentation < previousIndentation) { // close sublist
+        } else if (indentation < previousIndentation) {
+          // close sublist
           markup += state.pop(); // close last item
           markup += state.pop(); // close sublist
           markup += state.pop(); // close parent item
         }
-      } else { // start new list
+      } else {
+        // start new list
         markup += "<ul>";
         state.push("</ul>");
       }
@@ -175,7 +191,9 @@ export function render(markdown) {
         continue;
       }
 
-      const src = {value: "", charsOnly: true}, alt = {value: ""}, title = {value: ""};
+      const src = { value: "", charsOnly: true, },
+        alt = { value: "", },
+        title = { value: "", };
       let offset;
       let attr = alt;
       for (offset = idx + 2; offset < len; ++offset) {
@@ -206,7 +224,6 @@ export function render(markdown) {
 
       idx = offset;
 
-
       markup += "<img src=\"" + src.value + "\"";
       if (alt.value) {
         markup += " alt=\"" + alt.value + "\"";
@@ -227,8 +244,8 @@ export function render(markdown) {
 
       continue;
     } else if (charcode == CHARS.ENDBRACKET) {
-      let link = "", valid;
-      let offset;
+      let link = "";
+      let offset, valid;
       for (offset = idx + 1; offset < len; ++offset) {
         const lookahead = markdown.charCodeAt(offset);
 
@@ -247,7 +264,9 @@ export function render(markdown) {
 
       idx = offset;
 
-      markup = markup.replace("<a href=\"#link\">", "<a href=\"" + link + "\">") + state.pop();
+      markup =
+        markup.replace("<a href=\"#link\">", "<a href=\"" + link + "\">") +
+        state.pop();
 
       continue;
     } else {

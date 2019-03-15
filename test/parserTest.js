@@ -1,5 +1,5 @@
-import {expect} from "chai";
-import {render} from "../index";
+import { expect } from "chai";
+import { render } from "../index";
 
 describe("markdown to html", () => {
   describe("text", () => {
@@ -46,11 +46,15 @@ describe("markdown to html", () => {
     });
 
     it("renders h2 until end of line text from double hash", () => {
-      expect(render("# Title\nNext line.")).to.equal("<h1>Title</h1>\n<p>Next line.</p>");
+      expect(render("# Title\nNext line.")).to.equal(
+        "<h1>Title</h1>\n<p>Next line.</p>"
+      );
     });
 
     it("hash without succeeding whitespace is ignored", () => {
-      expect(render("#Title\nNext line.")).to.equal("<p>#Title</p>\n<p>Next line.</p>");
+      expect(render("#Title\nNext line.")).to.equal(
+        "<p>#Title</p>\n<p>Next line.</p>"
+      );
     });
 
     it("single hash is printed", () => {
@@ -60,19 +64,35 @@ describe("markdown to html", () => {
 
   describe("emphasis", () => {
     it("renders italic from text surrounded by single asterix or underscore", () => {
-      expect(render("Emphasis, aka italics, with *asterisks* or _underscores_.")).to.equal("<p>Emphasis, aka italics, with <i>asterisks</i> or <i>underscores</i>.</p>");
+      expect(
+        render("Emphasis, aka italics, with *asterisks* or _underscores_.")
+      ).to.equal(
+        "<p>Emphasis, aka italics, with <i>asterisks</i> or <i>underscores</i>.</p>"
+      );
     });
 
     it("renders strong from text surrounded by double asterix", () => {
-      expect(render("Strong emphasis, aka bold, with **asterisks** or __underscores__.")).to.equal("<p>Strong emphasis, aka bold, with <strong>asterisks</strong> or <strong>underscores</strong>.</p>");
+      expect(
+        render(
+          "Strong emphasis, aka bold, with **asterisks** or __underscores__."
+        )
+      ).to.equal(
+        "<p>Strong emphasis, aka bold, with <strong>asterisks</strong> or <strong>underscores</strong>.</p>"
+      );
     });
 
     it("renders italic and strong from text surrounded by single asterix and double underscore", () => {
-      expect(render("Combined emphasis with **asterisks and _underscores_**.")).to.equal("<p>Combined emphasis with <strong>asterisks and <i>underscores</i></strong>.</p>");
+      expect(
+        render("Combined emphasis with **asterisks and _underscores_**.")
+      ).to.equal(
+        "<p>Combined emphasis with <strong>asterisks and <i>underscores</i></strong>.</p>"
+      );
     });
 
     it("**_asterisks and underscore_**", () => {
-      expect(render("**_asterisks and underscore_**")).to.equal("<p><strong><i>asterisks and underscore</i></strong></p>");
+      expect(render("**_asterisks and underscore_**")).to.equal(
+        "<p><strong><i>asterisks and underscore</i></strong></p>"
+      );
     });
   });
 
@@ -82,7 +102,9 @@ describe("markdown to html", () => {
     });
 
     it("renders unordered list with multiple items from text starting with hyphen", () => {
-      expect(render("- Item 1\n- Item 2")).to.equal("<ul><li>Item 1</li><li>Item 2</li></ul>");
+      expect(render("- Item 1\n- Item 2")).to.equal(
+        "<ul><li>Item 1</li><li>Item 2</li></ul>"
+      );
     });
 
     it("ignores list item not where hyphen is not followed by space", () => {
@@ -90,11 +112,15 @@ describe("markdown to html", () => {
     });
 
     it("accepts sublist", () => {
-      expect(render("- Item 1\n  - Sub item 1")).to.equal("<ul><li>Item 1<ul><li>Sub item 1</li></ul></li></ul>");
+      expect(render("- Item 1\n  - Sub item 1")).to.equal(
+        "<ul><li>Item 1<ul><li>Sub item 1</li></ul></li></ul>"
+      );
     });
 
     it("continues list after sublist", () => {
-      expect(render("- Item 1\n  - Sub item 1\n- Item 2")).to.equal("<ul><li>Item 1<ul><li>Sub item 1</li></ul></li><li>Item 2</li></ul>");
+      expect(render("- Item 1\n  - Sub item 1\n- Item 2")).to.equal(
+        "<ul><li>Item 1<ul><li>Sub item 1</li></ul></li><li>Item 2</li></ul>"
+      );
     });
 
     it("list with sublist items", () => {
@@ -115,7 +141,9 @@ describe("markdown to html", () => {
 </ul>
 `;
 
-      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+      expect(render(markdown).replace(/\n/g, "")).to.equal(
+        markup.replace(/\n/g, "")
+      );
     });
 
     it("list with sublist that contain sublist items", () => {
@@ -145,7 +173,13 @@ describe("markdown to html", () => {
 </ul>
 `;
 
-      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+      expect(render(markdown).replace(/\n/g, "")).to.equal(
+        markup.replace(/\n/g, "")
+      );
+    });
+
+    it("'- t-shirt' should be a list with 't-shirt'", () => {
+      expect(render("- t-shirt")).to.equal("<ul><li>t-shirt</li></ul>");
     });
   });
 
@@ -155,35 +189,61 @@ describe("markdown to html", () => {
     });
 
     it("emphasis text is accepted in anchor text", () => {
-      expect(render("[__Text__](anchor)")).to.equal("<a href=\"anchor\"><strong>Text</strong></a>");
-      expect(render("[**Text**](anchor)")).to.equal("<a href=\"anchor\"><strong>Text</strong></a>");
-      expect(render("[_Text_](anchor)")).to.equal("<a href=\"anchor\"><i>Text</i></a>");
+      expect(render("[__Text__](anchor)")).to.equal(
+        "<a href=\"anchor\"><strong>Text</strong></a>"
+      );
+      expect(render("[**Text**](anchor)")).to.equal(
+        "<a href=\"anchor\"><strong>Text</strong></a>"
+      );
+      expect(render("[_Text_](anchor)")).to.equal(
+        "<a href=\"anchor\"><i>Text</i></a>"
+      );
     });
 
     it("use this [link](anchor) wraps link in paragraph", () => {
-      expect(render("use this [link](anchor)")).to.equal("<p>use this <a href=\"anchor\">link</a></p>");
+      expect(render("use this [link](anchor)")).to.equal(
+        "<p>use this <a href=\"anchor\">link</a></p>"
+      );
     });
 
     it("## use this [link](anchor) wraps link in header", () => {
-      expect(render("## use this [link](anchor)")).to.equal("<h2>use this <a href=\"anchor\">link</a></h2>");
+      expect(render("## use this [link](anchor)")).to.equal(
+        "<h2>use this <a href=\"anchor\">link</a></h2>"
+      );
     });
   });
 
   describe("images", () => {
     it("![alt text](https://imgserver/icon48.png \"Title\") renders img tag with alt and title", () => {
-      expect(render("![alt text](https://imgserver/icon48.png \"Title\")")).to.equal("<img src=\"https://imgserver/icon48.png\" alt=\"alt text\" title=\"Title\">");
+      expect(
+        render("![alt text](https://imgserver/icon48.png \"Title\")")
+      ).to.equal(
+        "<img src=\"https://imgserver/icon48.png\" alt=\"alt text\" title=\"Title\">"
+      );
     });
 
     it("without title renders image", () => {
-      expect(render("![alt text](https://imgserver/icon48.png)")).to.equal("<img src=\"https://imgserver/icon48.png\" alt=\"alt text\">");
+      expect(render("![alt text](https://imgserver/icon48.png)")).to.equal(
+        "<img src=\"https://imgserver/icon48.png\" alt=\"alt text\">"
+      );
     });
 
     it("renders inline image", () => {
-      expect(render("This is an image ![alt text](https://imgserver/icon48.png) with title")).to.equal("<p>This is an image <img src=\"https://imgserver/icon48.png\" alt=\"alt text\"> with title</p>");
+      expect(
+        render(
+          "This is an image ![alt text](https://imgserver/icon48.png) with title"
+        )
+      ).to.equal(
+        "<p>This is an image <img src=\"https://imgserver/icon48.png\" alt=\"alt text\"> with title</p>"
+      );
     });
 
     it("renders linked image", () => {
-      expect(render("This is a linked [image ![logo](https://cdn/logo.png)](anchor)")).to.equal("<p>This is a linked <a href=\"anchor\">image <img src=\"https://cdn/logo.png\" alt=\"logo\"></a></p>");
+      expect(
+        render("This is a linked [image ![logo](https://cdn/logo.png)](anchor)")
+      ).to.equal(
+        "<p>This is a linked <a href=\"anchor\">image <img src=\"https://cdn/logo.png\" alt=\"logo\"></a></p>"
+      );
     });
   });
 
@@ -206,7 +266,9 @@ describe("markdown to html", () => {
     });
 
     it("multiple new line chars are treated as one new line", () => {
-      const markdown = `- Item 1${[13, 10, 13, 10, 13].map((n) => String.fromCharCode(n)).join("")}- Item 2`;
+      const markdown = `- Item 1${[13, 10, 13, 10, 13]
+        .map((n) => String.fromCharCode(n))
+        .join("")}- Item 2`;
       const markup = "<ul><li>Item 1</li><li>Item 2</li></ul>";
 
       expect(render(markdown)).to.equal(markup);
@@ -259,7 +321,9 @@ new paragraph
       const markup = `<ul><li>Item 1</li></ul><p>new paragraph</p>
 <ul><li>Item 1</li><li>Item 2</li></ul>`;
 
-      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+      expect(render(markdown).replace(/\n/g, "")).to.equal(
+        markup.replace(/\n/g, "")
+      );
     });
 
     it("links happy trail", () => {
@@ -288,7 +352,9 @@ new paragraph with [link1](anchor1)
 <h2>Headline with <a href="anchor3">link3</a></h2>
 <a href="anchor4">link4</a>`;
 
-      expect(render(markdown).replace(/\n/g, "")).to.equal(markup.replace(/\n/g, ""));
+      expect(render(markdown).replace(/\n/g, "")).to.equal(
+        markup.replace(/\n/g, "")
+      );
     });
   });
 });

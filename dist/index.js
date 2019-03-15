@@ -33,14 +33,21 @@ function render(markdown) {
   let nstate,
       charcode,
       indentation = 0,
-      previousIndentation = 0;
+      previousIndentation = 0,
+      blockIndex = -1;
 
   for (let idx = 0; idx <= len; ++idx) {
+    ++blockIndex;
     charcode = markdown.charCodeAt(idx);
 
     if (charcode == CHARS.NEW_LINE || charcode == CHARS.CARRIAGE_RETURN) {
+      blockIndex = -1;
       let lookahead = markdown.charCodeAt(idx + 1);
-      if (lookahead == CHARS.NEW_LINE || lookahead == CHARS.CARRIAGE_RETURN) continue;
+
+      if (lookahead == CHARS.NEW_LINE || lookahead == CHARS.CARRIAGE_RETURN) {
+        continue;
+      }
+
       previousIndentation = indentation;
       indentation = 0;
 
@@ -71,7 +78,10 @@ function render(markdown) {
         continue;
       }
 
-      if (!nstate || (nstate & NSTATE.FLOWCONTENT) == NSTATE.FLOWCONTENT) continue;
+      if (!nstate || (nstate & NSTATE.FLOWCONTENT) == NSTATE.FLOWCONTENT) {
+        continue;
+      }
+
       nstate = undefined;
       const lastState = state.pop();
       if (lastState) markup += lastState + String.fromCharCode(charcode);
@@ -86,9 +96,8 @@ function render(markdown) {
         continue;
       }
 
-      let size = 1,
-          valid;
-      let offset;
+      let size = 1;
+      let offset, valid;
 
       for (offset = idx + 1; offset < len; ++offset) {
         const lookahead = markdown.charCodeAt(offset);
@@ -123,7 +132,10 @@ function render(markdown) {
       if (nstate && !(nstate & NSTATE.FLOWCONTENT)) {
         markup += "-";
         continue;
-      } else if (markdown.charCodeAt(idx + 1) !== CHARS.SPACE) {
+      } else if (blockIndex != 0) {
+        markup += "-";
+        continue;
+      } else if (markdown.charCodeAt(idx + 1) != CHARS.SPACE) {
         nstate = NSTATE.PHRASINGCONTENT;
         markup += "<p>";
         state.push("</p>");
@@ -252,9 +264,8 @@ function render(markdown) {
       nstate = nstate | NSTATE.PHRASINGCONTENT;
       continue;
     } else if (charcode == CHARS.ENDBRACKET) {
-      let link = "",
-          valid;
-      let offset;
+      let link = "";
+      let offset, valid;
 
       for (offset = idx + 1; offset < len; ++offset) {
         const lookahead = markdown.charCodeAt(offset);
